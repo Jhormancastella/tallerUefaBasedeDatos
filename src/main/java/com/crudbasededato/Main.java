@@ -8,8 +8,6 @@ import com.crudbasededato.infrastructure.database.ConnectionDb;
 import com.crudbasededato.menu.RetosBase;
 import com.crudbasededato.menu.adicionales;
 import com.crudbasededato.model.Equipo;
-import com.crudbasededato.EquipoService;
-import com.crudbasededato.JugadorService;
 
 public class Main {
     private static EquipoService equipoService;
@@ -19,6 +17,12 @@ public class Main {
     public static void main(String[] args) {
         // Inicialización de la conexión a la base de datos
         ConnectionDb conexionDb = ConnectMysqlFactory.crearConexion();
+
+        // Comprobar si la conexión a la base de datos fue exitosa
+        if (!comprobarConexion(conexionDb)) {
+            System.out.println("❌ No se pudo establecer conexión con la base de datos. Saliendo del programa...");
+            return; // Salir del programa si la conexión falla
+        }
 
         // Inicialización de servicios
         equipoService = new EquipoService(conexionDb);
@@ -30,6 +34,24 @@ public class Main {
 
         // Mostrar el menú principal
         mostrarMenuPrincipal();
+    }
+
+    /**
+     * Comprueba si la conexión a la base de datos es válida.
+     *
+     * @param conexionDb La conexión a la base de datos.
+     * @return `true` si la conexión es válida, `false` en caso contrario.
+     */
+    private static boolean comprobarConexion(ConnectionDb conexionDb) {
+        try {
+            // Intentar obtener una conexión
+            conexionDb.getConexion();
+            System.out.println("✅ Conexión a la base de datos establecida correctamente.");
+            return true;
+        } catch (Exception e) {
+            System.err.println("❌ Error al conectar a la base de datos: " + e.getMessage());
+            return false;
+        }
     }
 
     private static void mostrarMenuPrincipal() {
@@ -53,7 +75,7 @@ public class Main {
                         RetosBase.mostrarMenuRetosBase(equipoService, jugadorService, scanner);
                         break;
                     case 2:
-                        adicionales.mostrarMenuRetosAdicionales(null, equipoService, jugadorService, scanner);
+                        adicionales.mostrarMenuRetosAdicionales(equipoService, jugadorService, scanner);
                         break;
                     case 3:
                         mostrarMenuCRUD();

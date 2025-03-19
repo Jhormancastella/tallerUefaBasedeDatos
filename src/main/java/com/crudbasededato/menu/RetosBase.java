@@ -103,7 +103,7 @@ public class RetosBase {
         System.out.println("\nJugador más alto de cada equipo:");
         System.out.println("----------------------------------");
         equipos.forEach(e -> {
-            Jugador jugadorMasAlto = jugadorService.encontrarJugadorMasAlto(e.getJugadores());
+            jugador jugadorMasAlto = jugadorService.encontrarJugadorMasAlto(e.getJugadores());
             System.out.println("Equipo: " + e.getNombre() + ", Jugador más alto: " + (jugadorMasAlto != null ? jugadorMasAlto.getNombre() : "No encontrado"));
         });
     }

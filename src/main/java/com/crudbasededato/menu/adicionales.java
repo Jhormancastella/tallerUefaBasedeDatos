@@ -112,7 +112,7 @@ public class adicionales {
     }
 
     private static void encontrarJugadorMasAltoDeTodosLosEquipos(JugadorService jugadorService) {
-        Jugador jugador = jugadorService.encontrarJugadorMasAltoDeTodosLosEquipos();
+        jugador jugador = jugadorService.encontrarJugadorMasAltoDeTodosLosEquipos();
         System.out.println("-------------------------------------");
         System.out.println("\nJugador más alto de todos los equipos: " + (jugador != null ? jugador.getNombre() : "No encontrado"));
         System.out.println("-------------------------------------");
@@ -142,7 +142,7 @@ public class adicionales {
     }
 
     private static void listarJugadoresBrasilenosOrdenadosPorEdad(JugadorService jugadorService) {
-        List<Jugador> jugadores = jugadorService.listarJugadoresBrasilenosOrdenadosPorEdad();
+        List<jugador> jugadores = jugadorService.listarJugadoresBrasilenosOrdenadosPorEdad();
         System.out.println("------------------------------------------");
         System.out.println("\nJugadores brasileños ordenados por edad:");
         System.out.println("------------------------------------------");

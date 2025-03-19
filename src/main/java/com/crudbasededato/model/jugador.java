@@ -38,4 +38,24 @@ public class jugador {
     public void setEquipo(Equipo equipo) {
         this.equipo = equipo;
     }
+
+    public void setId(int int1) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setId'");
+    }
+
+    public void setAltura(double double1) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setAltura'");
+    }
+
+    public int getEdad() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getEdad'");
+    }
+
+    public double getAltura() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAltura'");
+    }
 }

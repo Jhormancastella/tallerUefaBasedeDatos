@@ -1,6 +1,8 @@
 package com.crudbasededato;
 
 import com.crudbasededato.infrastructure.database.ConnectionDb;
+
+import com.crudbasededato.model.Equipo;
 import com.crudbasededato.model.jugador;
 
 import java.sql.Connection;
@@ -9,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class JugadorService {
 
@@ -175,5 +178,30 @@ public class JugadorService {
             System.err.println("Error al contar los delanteros: " + e.getMessage());
         }
         return totalDelanteros;
+    }
+
+    public List<jugador> listarJugadoresBrasilenosOrdenadosPorEdad() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'listarJugadoresBrasilenosOrdenadosPorEdad'");
+    }
+
+    public Map<String, Long> agruparJugadoresPorPosicion() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'agruparJugadoresPorPosicion'");
+    }
+
+    public List<Equipo> obtenerEquiposConJugadores() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'obtenerEquiposConJugadores'");
+    }
+
+    public double calcularPromedioEdad(Object jugadores) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'calcularPromedioEdad'");
+    }
+
+    public jugador encontrarJugadorMasAlto(Object jugadores) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'encontrarJugadorMasAlto'");
     }
 }
