@@ -14,15 +14,15 @@ public class Equipo {
     public Equipo() {
     }
 
-    // Constructor completo
-    public Equipo(int id, String name, String yearfoundation, List<estadisticas> statistics, List<jugador> players, String coach) {
-        this.id = id;
-        this.name = name;
-        this.yearfoundation = yearfoundation;
-        this.statistics = statistics;
-        this.players = players;
-        this.coach = coach;
-    }
+    // // Constructor completo
+    // public Equipo(int id, String name, String yearfoundation, List<estadisticas> statistics, List<jugador> players, String coach) {
+    //     this.id = id;
+    //     this.name = name;
+    //     this.yearfoundation = yearfoundation;
+    //     this.statistics = statistics;
+    //     this.players = players;
+    //     this.coach = coach;
+    // }
 
     // Constructor sin estadísticas y jugadores
     public Equipo(int id, String name, String yearfoundation, String coach) {

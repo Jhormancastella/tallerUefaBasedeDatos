@@ -1,5 +1,8 @@
 package com.crudbasededato.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class estadisticas {
     private String pj; // Partidos jugados
     private String pg; // Partidos ganados
@@ -9,8 +12,20 @@ public class estadisticas {
     private String gc; // Goles en contra
     private String tp; // Total de puntos
 
-    // Constructor
-    public estadisticas(String pj, String pg, String pe, String pp, String gf, String gc, String tp) {
+    // Constructor por defecto (requerido por Jackson)
+    public estadisticas() {
+    }
+
+    // Constructor con todos los campos (anotado con @JsonCreator)
+    @JsonCreator
+    public estadisticas(
+            @JsonProperty("pj") String pj,
+            @JsonProperty("pg") String pg,
+            @JsonProperty("pe") String pe,
+            @JsonProperty("pp") String pp,
+            @JsonProperty("gf") String gf,
+            @JsonProperty("gc") String gc,
+            @JsonProperty("tp") String tp) {
         this.pj = pj;
         this.pg = pg;
         this.pe = pe;

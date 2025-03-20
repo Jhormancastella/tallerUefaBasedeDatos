@@ -6,9 +6,9 @@ import java.util.Scanner;
 
 import com.crudbasededato.domain.entity.Equipo;
 import com.crudbasededato.infrastructure.jsonReader;
+import com.crudbasededato.infrastructure.database.ConnMySql;
 import com.crudbasededato.infrastructure.database.ConnectionDb;
 import com.crudbasededato.infrastructure.database.ConnectionFactory;
-import com.crudbasededato.infrastructure.database.ConnMySql;
 import com.crudbasededato.menu.RetosBase;
 import com.crudbasededato.menu.adicionales;
 import com.crudbasededato.service.EquipoService;
@@ -121,11 +121,14 @@ public class Main {
     }
 
     private static void mostrarSubmenuMySQL() {
+
         // Crear una instancia de ConnMySql usando ConnectionFactory
+
         ConnectionDb connectionDb = ConnectionFactory.crearConexion();
         ConnMySql connMySql = (ConnMySql) connectionDb;
     
         // Verificar la conexión a la base de datos
+
         System.out.println("Verificando conexión a la base de datos...");
         boolean isConnected = connMySql.testConnection();
     
@@ -136,6 +139,7 @@ public class Main {
         }
     
         // Si la conexión es exitosa, mostrar el submenú
+
         int opcion;
         do {
             System.out.println("------------------------");
@@ -219,6 +223,7 @@ public class Main {
             }
         } while (opcion != 9);
     }
+    
     // Método para poner una pausa
     public static void pausar(int segundos) {
         try {

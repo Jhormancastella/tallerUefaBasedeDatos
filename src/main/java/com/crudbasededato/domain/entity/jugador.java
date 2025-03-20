@@ -1,5 +1,6 @@
 package com.crudbasededato.domain.entity;
 
+// import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class jugador {
     private int id; // ID del jugador
@@ -11,6 +12,9 @@ public class jugador {
     private String height;
     private String weight;
     private String position;
+
+    // Constructor por defecto (necesario para Jackson)
+    public jugador() {}
 
     // Constructor completo
     public jugador(int id, int equipoId, String dorsal, String name, String nationality, String age, String height, String weight, String position) {
