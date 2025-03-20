@@ -8,25 +8,25 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.crudbasededato.infrastructure.database.ConnectionDb;
 import com.crudbasededato.domain.entity.Equipo;
 import com.crudbasededato.domain.repository.equipoRepository;
-import com.mysql.cj.xdevapi.Client;
+import com.crudbasededato.infrastructure.database.ConnectionDb;
 
-public class equipoRepositoryImpl implements equipotRespository {
+public class equipoRepositoryImpl implements equipoRepository {
     private final ConnectionDb connection;
-    
+
     public equipoRepositoryImpl(ConnectionDb connection) {
         this.connection = connection;
     }
+
     @Override
-    public void guardar(Client cliente) {
-        String sql = "INSERT INTO client (id, name, email) VALUES (?, ?, ?)";
+    public void guardar(Equipo equipo) {
+        String sql = "INSERT INTO equipos (name, yearfoundation, coach) VALUES (?, ?, ?)";
         try (Connection conexion = connection.getConexion();
              PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            stmt.setInt(1, cliente.getId());
-            stmt.setString(2, cliente.getName());
-            stmt.setString(3, cliente.getEmail());
+            stmt.setString(1, equipo.getName());
+            stmt.setString(2, equipo.getYearfoundation());
+            stmt.setString(3, equipo.getCoach());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -34,14 +34,19 @@ public class equipoRepositoryImpl implements equipotRespository {
     }
 
     @Override
-    public Client buscarPorId(int id) {
-        String sql = "SELECT * FROM client WHERE id = ?";
+    public Equipo buscarPorId(int id) {
+        String sql = "SELECT * FROM equipos WHERE id = ?";
         try (Connection conexion = connection.getConexion();
              PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return new Client(rs.getInt("id"), rs.getString("name"), rs.getString("email"));
+                return new Equipo(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("yearfoundation"),
+                    rs.getString("coach")
+                );
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -50,29 +55,35 @@ public class equipoRepositoryImpl implements equipotRespository {
     }
 
     @Override
-    public List<Client> listarTodos() {
-        List<Client> client = new ArrayList<>();
-        String sql = "SELECT * FROM client";
+    public List<Equipo> listarTodos() {
+        List<Equipo> equipos = new ArrayList<>();
+        String sql = "SELECT * FROM equipos";
         try (Connection conexion = connection.getConexion();
              Statement stmt = conexion.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                client.add(new Client(rs.getInt("id"), rs.getString("name"), rs.getString("email")));
+                equipos.add(new Equipo(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("yearfoundation"),
+                    rs.getString("coach")
+                ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return client;
+        return equipos;
     }
 
     @Override
-    public void actualizar(Client cliente) {
-        String sql = "UPDATE client SET name = ?, email = ? WHERE id = ?";
+    public void actualizar(Equipo equipo) {
+        String sql = "UPDATE equipos SET name = ?, yearfoundation = ?, coach = ? WHERE id = ?";
         try (Connection conexion = connection.getConexion();
              PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            stmt.setString(1, cliente.getName());
-            stmt.setString(2, cliente.getEmail());
-            stmt.setInt(3, cliente.getId());
+            stmt.setString(1, equipo.getName());
+            stmt.setString(2, equipo.getYearfoundation());
+            stmt.setString(3, equipo.getCoach());
+            stmt.setInt(4, equipo.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -81,7 +92,7 @@ public class equipoRepositoryImpl implements equipotRespository {
 
     @Override
     public void eliminar(int id) {
-        String sql = "DELETE FROM client WHERE id = ?";
+        String sql = "DELETE FROM equipos WHERE id = ?";
         try (Connection conexion = connection.getConexion();
              PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -90,5 +101,4 @@ public class equipoRepositoryImpl implements equipotRespository {
             e.printStackTrace();
         }
     }
-
 }

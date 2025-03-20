@@ -1,6 +1,9 @@
 package com.crudbasededato.domain.entity;
 
+
 public class jugador {
+    private int id; // ID del jugador
+    private int equipoId; // ID del equipo al que pertenece
     private String dorsal;
     private String name;
     private String nationality;
@@ -9,7 +12,35 @@ public class jugador {
     private String weight;
     private String position;
 
+    // Constructor completo
+    public jugador(int id, int equipoId, String dorsal, String name, String nationality, String age, String height, String weight, String position) {
+        this.id = id;
+        this.equipoId = equipoId;
+        this.dorsal = dorsal;
+        this.name = name;
+        this.nationality = nationality;
+        this.age = age;
+        this.height = height;
+        this.weight = weight;
+        this.position = position;
+    }
+
     // Getters y Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getEquipoId() {
+        return equipoId;
+    }
+
+    public void setEquipoId(int equipoId) {
+        this.equipoId = equipoId;
+    }
 
     public String getDorsal() {
         return dorsal;

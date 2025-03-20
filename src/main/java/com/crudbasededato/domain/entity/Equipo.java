@@ -10,8 +10,29 @@ public class Equipo {
     private List<jugador> players;
     private String coach;
 
-    // Getters y Setters
+    // Constructor por defecto (requerido por Jackson)
+    public Equipo() {
+    }
 
+    // Constructor completo
+    public Equipo(int id, String name, String yearfoundation, List<estadisticas> statistics, List<jugador> players, String coach) {
+        this.id = id;
+        this.name = name;
+        this.yearfoundation = yearfoundation;
+        this.statistics = statistics;
+        this.players = players;
+        this.coach = coach;
+    }
+
+    // Constructor sin estadísticas y jugadores
+    public Equipo(int id, String name, String yearfoundation, String coach) {
+        this.id = id;
+        this.name = name;
+        this.yearfoundation = yearfoundation;
+        this.coach = coach;
+    }
+
+    // Getters y Setters
     public int getId() {
         return id;
     }
@@ -60,10 +81,26 @@ public class Equipo {
         this.coach = coach;
     }
 
-    // Método toString para darle un mejor formato en consola 
-
+    // Método toString para darle un mejor formato en consola
     @Override
     public String toString() {
-        return String.format("| %-4d | %-20s | %-30s |", id, name, yearfoundation,statistics,players,coach);
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("| %-4d | %-20s | %-12s | %-20s |\n", id, name, yearfoundation, coach));
+
+        if (statistics != null && !statistics.isEmpty()) {
+            sb.append("Estadísticas:\n");
+            for (estadisticas estadistica : statistics) {
+                sb.append(estadistica.toString()).append("\n");
+            }
+        }
+
+        if (players != null && !players.isEmpty()) {
+            sb.append("Jugadores:\n");
+            for (jugador jugador : players) {
+                sb.append(jugador.toString()).append("\n");
+            }
+        }
+
+        return sb.toString();
     }
 }

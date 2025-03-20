@@ -2,8 +2,8 @@ package com.crudbasededato.application.usecase.equipo;
 
 import java.util.List;
 
+import com.crudbasededato.domain.entity.Equipo;
 import com.crudbasededato.domain.repository.equipoRepository;
-import com.mysql.cj.xdevapi.Client;
 
 public class equipoUseCase {
     private final equipoRepository repository;
@@ -12,25 +12,30 @@ public class equipoUseCase {
         this.repository = repository;
     }
 
-    public void registrarequipo(int id, String nombre, String email) {
-        equipos equipo = new equipo(id, nombre, email);
+    // Registrar un nuevo equipo
+    public void registrarEquipo(int id, String name, String yearfoundation, String coach) {
+        Equipo equipo = new Equipo(id, name, yearfoundation, coach);
         repository.guardar(equipo);
     }
 
-    public equipo obtenerequipo(int id) {
+    // Obtener un equipo por su ID
+    public Equipo obtenerEquipo(int id) {
         return repository.buscarPorId(id);
     }
 
-    public List<equipo> listarequipos() {
+    // Listar todos los equipos
+    public List<Equipo> listarEquipos() {
         return repository.listarTodos();
     }
 
-    public void actualizarequipo(int id, String nombre, String email) {
-        equipo equipo = new equipo(id, nombre, email);
+    // Actualizar un equipo existente
+    public void actualizarEquipo(int id, String name, String yearfoundation, String coach) {
+        Equipo equipo = new Equipo(id, name, yearfoundation, coach);
         repository.actualizar(equipo);
     }
 
-    public void eliminarequipo(int id) {
+    // Eliminar un equipo por su ID
+    public void eliminarEquipo(int id) {
         repository.eliminar(id);
     }
 }
