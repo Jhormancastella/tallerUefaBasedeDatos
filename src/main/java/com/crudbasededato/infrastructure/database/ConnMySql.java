@@ -18,6 +18,7 @@ public class ConnMySql implements ConnectionDb {
     }
 
     // Método para probar la conexión
+    
     public boolean testConnection() {
         try (Connection connection = getConexion()) {
             System.out.println("Conexión exitosa a la base de datos: " + connection.getCatalog());

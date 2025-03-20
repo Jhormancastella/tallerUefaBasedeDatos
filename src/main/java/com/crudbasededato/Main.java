@@ -49,9 +49,9 @@ public class Main {
     private static void mostrarMenuPrincipal() {
         int opcion;
         do {
-            System.out.println("------------------------");
-            System.out.println("---- Menú Principal ----");
-            System.out.println("------------------------");
+            System.out.println("------------------------------------");
+            System.out.println("---------- Menú Principal ----------");
+            System.out.println("------------------------------------");
             System.out.println("1. Retos con consumo de archivo JSON");
             System.out.println("2. Retos con la base de datos (MySQL)");
             System.out.println("3. Salir");
@@ -70,6 +70,8 @@ public class Main {
                         break;
                     case 3:
                         System.out.println("Saliendo del programa...");
+                        pausar(3);
+                        limpiarConsola();
                         break;
                     default:
                         System.out.println("Opción no válida. Intente de nuevo.");
@@ -86,9 +88,9 @@ public class Main {
     private static void mostrarSubmenuJSON() {
         int opcion;
         do {
-            System.out.println("------------------------");
-            System.out.println("---- Submenú JSON ----");
-            System.out.println("------------------------");
+            System.out.println("------------------------------");
+            System.out.println("-------- Submenú JSON --------");
+            System.out.println("------------------------------");
             System.out.println("1. Retos Base");
             System.out.println("2. Retos Adicionales");
             System.out.println("3. Regresar al menu principal");
@@ -134,7 +136,9 @@ public class Main {
     
         if (!isConnected) {
             System.out.println("No se pudo conectar a la base de datos. Regresando al menú principal...");
+
             pausar(3); // Pausa para que el usuario lea el mensaje
+            
             return; // Regresar al menú principal
         }
     
@@ -142,9 +146,9 @@ public class Main {
 
         int opcion;
         do {
-            System.out.println("------------------------");
-            System.out.println("---- Submenú MySQL ----");
-            System.out.println("------------------------");
+            System.out.println("-----------------------------------------------");
+            System.out.println("---------------- Submenú MySQL ----------------");
+            System.out.println("-----------------------------------------------");
             System.out.println("1. Listar equipos (Leer)");
             System.out.println("2. Insertar un nuevo equipo (Crear)");
             System.out.println("3. Actualizar un equipo existente (Actualizar)");
@@ -163,32 +167,37 @@ public class Main {
                 switch (opcion) {
                     case 1:
                         // Lógica para listar equipos (Leer) // Método para listar equipos
-
-                        System.out.println("Listando equipos desde la base de datos...");
+                        System.out.println("---------------------------------------------");
+                        System.out.println("\n Listando equipos desde la base de datos...");
+                        System.out.println("---------------------------------------------");
                         equipoService.listarEquipos();
                         break;
                     case 2:
                         // Lógica para insertar un nuevo equipo (Crear) // Método para insertar un equipo
-
-                        System.out.println("Insertando un nuevo equipo...");
+                        System.out.println("-------------------------------");
+                        System.out.println("\nInsertando un nuevo equipo...");
+                        System.out.println("-------------------------------");
                         equipoService.insertarEquipo(scanner); 
                         break;
                     case 3:
                         // Lógica para actualizar un equipo existente (Actualizar) // Método para actualizar un equipo
-
-                        System.out.println("Actualizando un equipo existente...");
+                        System.out.println("-------------------------------------");
+                        System.out.println("\nActualizando un equipo existente...");
+                        System.out.println("-------------------------------------");
                         equipoService.actualizarEquipo(scanner); 
                         break;
                     case 4:
                         // Lógica para eliminar un equipo (Eliminar) // Método para eliminar un equipo
-
-                        System.out.println("Eliminando un equipo...");
+                        System.out.println("-----------------------");
+                        System.out.println("\nEliminando un equipo...");
+                        System.out.println("-----------------------");
                         equipoService.eliminarEquipo(scanner); 
                         break;
                     case 5:
                         // Lógica para listar jugadores de un equipo (Leer) // Método para listar jugadores
-
-                        System.out.println("Listando jugadores de un equipo...");
+                        System.out.println("----------------------------------");
+                        System.out.println("\nListando jugadores de un equipo.");
+                        System.out.println("----------------------------------");
                         jugadorService.listarJugadores(scanner); 
                         break;
                     case 6:
@@ -218,8 +227,6 @@ public class Main {
             } else {
                 System.out.println("Entrada no válida. Por favor, ingrese un número.");
                 opcion = -1;
-                pausar(3);
-                limpiarConsola();
             }
         } while (opcion != 9);
     }

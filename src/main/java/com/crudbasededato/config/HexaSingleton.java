@@ -1,7 +1,8 @@
 package com.crudbasededato.config;
 
-import java.io.FileInputStream;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public enum HexaSingleton {
@@ -14,8 +15,11 @@ public enum HexaSingleton {
     }
 
     private void cargarConfiguraciones(String rutaArchivo) {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        try (FileInputStream archivo = new FileInputStream(classLoader.getResource(rutaArchivo).getFile())) {
+        try (InputStream archivo = getClass().getClassLoader().getResourceAsStream(rutaArchivo)) {
+            if (archivo == null) {
+                System.err.println("❌ Error cargando configuración: archivo no encontrado.");
+                return;
+            }
             propiedades.load(archivo);
         } catch (IOException e) {
             System.err.println("❌ Error cargando configuración: " + e.getMessage());
