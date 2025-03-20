@@ -3,15 +3,15 @@ package com.crudbasededato.menu;
 import java.util.List;
 import java.util.Scanner;
 
-import com.crudbasededato.EquipoService;
-import com.crudbasededato.JugadorService;
-import com.crudbasededato.Validaciones;
-import com.crudbasededato.model.Equipo;
-import com.crudbasededato.model.jugador;
+import com.crudbasededato.service.EquipoService;
+import com.crudbasededato.service.JugadorService;
+import com.crudbasededato.service.Validaciones;
+import com.crudbasededato.domain.entity.*;;
 
 public class RetosBase {
 
-    public static void mostrarMenuRetosBase(EquipoService equipoService, JugadorService jugadorService, Scanner scanner) {
+    public static void mostrarMenuRetosBase(List<Equipo> equipos, EquipoService equipoService,
+            JugadorService jugadorService, Scanner scanner) {
         int opcion;
         do {
             System.out.println("\n--- Menú de Retos Base ---");
@@ -21,7 +21,7 @@ public class RetosBase {
             System.out.println("4. Listar equipos con más de 20 victorias");
             System.out.println("5. Obtener el jugador más alto de cada equipo");
             System.out.println("6. Calcular el total de goles por equipo");
-            System.out.println("7. Volver al menú principal");
+            System.out.println("7. Regresar al menu principal");
             System.out.print("Seleccione una opción: ");
             String input = scanner.nextLine();
 
@@ -30,22 +30,22 @@ public class RetosBase {
 
                 switch (opcion) {
                     case 1:
-                        listarEquiposFundadosDespuesDe2000(equipoService);
+                        listarEquiposFundadosDespuesDe2000(equipos, equipoService);
                         break;
                     case 2:
-                        imprimirNombresEntrenadores(equipoService);
+                        imprimirNombresEntrenadores(equipos);
                         break;
                     case 3:
-                        calcularPromedioEdadJugadoresPorEquipo(jugadorService);
+                        calcularPromedioEdadJugadoresPorEquipo(equipos, jugadorService);
                         break;
                     case 4:
-                        listarEquiposConMasDe20Victorias(equipoService);
+                        listarEquiposConMasDe20Victorias(equipos);
                         break;
                     case 5:
-                        obtenerJugadorMasAltoPorEquipo(jugadorService);
+                        obtenerJugadorMasAltoPorEquipo(equipos, jugadorService);
                         break;
                     case 6:
-                        calcularTotalGolesPorEquipo(equipoService);
+                        calcularTotalGolesPorEquipo(equipos);
                         break;
                     case 7:
                         System.out.println("Volviendo al menú principal...");
@@ -62,70 +62,68 @@ public class RetosBase {
         } while (opcion != 7);
     }
 
-    private static void listarEquiposFundadosDespuesDe2000(EquipoService equipoService) {
-        List<Equipo> equiposFiltrados = equipoService.filtrarEquiposFundadosDespuesDe(2000);
+    private static void listarEquiposFundadosDespuesDe2000(List<Equipo> equipos, EquipoService equipoService) {
+        List<Equipo> equiposFiltrados = equipoService.filtrarEquiposFundadosDespuesDe(2000, equipos);
         System.out.println("----------------------------------------");
         System.out.println("\nEquipos fundados después del año 2000:");
         System.out.println("----------------------------------------");
-        equiposFiltrados.forEach(e -> System.out.println(e.getNombre()));
+        equiposFiltrados.forEach(e -> System.out.println(e.getName()));
     }
 
-    private static void imprimirNombresEntrenadores(EquipoService equipoService) {
-        List<Equipo> equipos = equipoService.obtenerTodosLosEquipos();
+    private static void imprimirNombresEntrenadores(List<Equipo> equipos) {
         System.out.println("------------------------------");
         System.out.println("\nNombres de los entrenadores:");
         System.out.println("------------------------------");
-        equipos.forEach(e -> System.out.println(e.getEntrenador()));
+        equipos.forEach(e -> System.out.println(e.getCoach()));
     }
 
-    private static void calcularPromedioEdadJugadoresPorEquipo(JugadorService jugadorService) {
-        List<Equipo> equipos = jugadorService.obtenerEquiposConJugadores();
+    private static void calcularPromedioEdadJugadoresPorEquipo(List<Equipo> equipos, JugadorService jugadorService) {
         System.out.println("-----------------------------------------------");
         System.out.println("\nPromedio de edad de los jugadores por equipo:");
         System.out.println("-----------------------------------------------");
         equipos.forEach(e -> {
-            double promedioEdad = jugadorService.calcularPromedioEdad(e.getJugadores());
-            System.out.println("Equipo: " + e.getNombre() + ", Promedio de edad: " + promedioEdad);
+            double promedioEdad = jugadorService.calcularPromedioEdad(e.getPlayers());
+            System.out.println("Equipo: " + e.getName() + ", Promedio de edad: " + promedioEdad);
         });
     }
 
-    private static void listarEquiposConMasDe20Victorias(EquipoService equipoService) {
-        List<Equipo> equiposFiltrados = equipoService.filtrarEquiposConMasDe20Victorias();
+    private static void listarEquiposConMasDe20Victorias(List<Equipo> equipos) {
         System.out.println("----------------------------------");
         System.out.println("\nEquipos con más de 20 victorias:");
         System.out.println("----------------------------------");
-        equiposFiltrados.forEach(e -> System.out.println(e.getNombre()));
+        equipos.stream()
+                .filter(e -> Integer.parseInt(e.getStatistics().get(0).getPg()) > 20)
+                .forEach(e -> System.out.println(e.getName()));
     }
 
-    private static void obtenerJugadorMasAltoPorEquipo(JugadorService jugadorService) {
-        List<Equipo> equipos = jugadorService.obtenerEquiposConJugadores();
+    private static void obtenerJugadorMasAltoPorEquipo(List<Equipo> equipos, JugadorService jugadorService) {
         System.out.println("----------------------------------");
         System.out.println("\nJugador más alto de cada equipo:");
         System.out.println("----------------------------------");
         equipos.forEach(e -> {
-            jugador jugadorMasAlto = jugadorService.encontrarJugadorMasAlto(e.getJugadores());
-            System.out.println("Equipo: " + e.getNombre() + ", Jugador más alto: " + (jugadorMasAlto != null ? jugadorMasAlto.getNombre() : "No encontrado"));
+            jugador jugadorMasAlto = jugadorService.encontrarJugadorMasAlto(e.getPlayers());
+            System.out.println("Equipo: " + e.getName() + ", Jugador más alto: " +jugadorMasAlto.getName() + ", Altura: " + jugadorMasAlto.getHeight() + " cm" + (jugadorMasAlto != null ? jugadorMasAlto.getName() : "No encontrado"));
         });
     }
 
-    private static void calcularTotalGolesPorEquipo(EquipoService equipoService) {
-        List<Equipo> equipos = equipoService.obtenerTodosLosEquipos();
+    private static void calcularTotalGolesPorEquipo(List<Equipo> equipos) {
         System.out.println("----------------------------");
         System.out.println("\nTotal de goles por equipo:");
         System.out.println("----------------------------");
         equipos.forEach(e -> {
-            int totalGoles = e.getGolesAFavor();
-            System.out.println("Equipo: " + e.getNombre() + ", Total de goles: " + totalGoles);
+            int totalGoles = Integer.parseInt(e.getStatistics().get(0).getGf());
+            System.out.println("Equipo: " + e.getName() + ", Total de goles: " + totalGoles);
         });
     }
 
     // Método para poner una pausa
     public static void pausar(int segundos) {
         try {
-            Thread.sleep(segundos * 1000);
+            Thread.sleep(segundos * 1000); // Convierte segundos a milisegundos
         } catch (InterruptedException e) {
             System.out.println("Error en la pausa: " + e.getMessage());
         }
+
     }
 
     // Método para limpiar la consola

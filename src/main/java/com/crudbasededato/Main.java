@@ -1,56 +1,48 @@
 package com.crudbasededato;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Scanner;
 
-import com.crudbasededato.infrastructure.database.ConnectMysqlFactory;
+import com.crudbasededato.domain.entity.Equipo;
+import com.crudbasededato.infrastructure.jsonReader;
 import com.crudbasededato.infrastructure.database.ConnectionDb;
+import com.crudbasededato.infrastructure.database.ConnectionFactory;
+import com.crudbasededato.infrastructure.database.ConnMySql;
 import com.crudbasededato.menu.RetosBase;
 import com.crudbasededato.menu.adicionales;
-import com.crudbasededato.model.Equipo;
+import com.crudbasededato.service.EquipoService;
+import com.crudbasededato.service.JugadorService;
+import com.crudbasededato.service.Validaciones;
 
 public class Main {
+    private static List<Equipo> equipos;
     private static EquipoService equipoService;
     private static JugadorService jugadorService;
     private static Scanner scanner;
 
     public static void main(String[] args) {
-        // Inicialización de la conexión a la base de datos
-        ConnectionDb conexionDb = ConnectMysqlFactory.crearConexion();
-
-        // Comprobar si la conexión a la base de datos fue exitosa
-        if (!comprobarConexion(conexionDb)) {
-            System.out.println("❌ No se pudo establecer conexión con la base de datos. Saliendo del programa...");
-            return; // Salir del programa si la conexión falla
-        }
-
-        // Inicialización de servicios
-        equipoService = new EquipoService(conexionDb);
-        jugadorService = new JugadorService(conexionDb);
-        scanner = new Scanner(System.in);
+        // Inicialización de dependencias
+        jsonReader jsonReader = new jsonReader();
+        InputStream inputStream = Main.class.getClassLoader().getResourceAsStream("equipos_uefa.json");
 
         // Limpiar la consola
         limpiarConsola();
 
-        // Mostrar el menú principal
-        mostrarMenuPrincipal();
-    }
+        if (inputStream == null) {
+            System.out.println("Error: Archivo JSON no encontrado en el classpath.");
+            return;
+        }
 
-    /**
-     * Comprueba si la conexión a la base de datos es válida.
-     *
-     * @param conexionDb La conexión a la base de datos.
-     * @return `true` si la conexión es válida, `false` en caso contrario.
-     */
-    private static boolean comprobarConexion(ConnectionDb conexionDb) {
-        try {
-            // Intentar obtener una conexión
-            conexionDb.getConexion();
-            System.out.println("✅ Conexión a la base de datos establecida correctamente.");
-            return true;
-        } catch (Exception e) {
-            System.err.println("❌ Error al conectar a la base de datos: " + e.getMessage());
-            return false;
+        equipos = jsonReader.leerEquiposDesdeJson(inputStream);
+        equipoService = new EquipoService();
+        jugadorService = new JugadorService();
+        scanner = new Scanner(System.in);
+
+        if (equipos != null) {
+            mostrarMenuPrincipal();
+        } else {
+            System.out.println("Error al leer el archivo JSON.");
         }
     }
 
@@ -60,10 +52,9 @@ public class Main {
             System.out.println("------------------------");
             System.out.println("---- Menú Principal ----");
             System.out.println("------------------------");
-            System.out.println("1. Retos Base");
-            System.out.println("2. Retos Adicionales");
-            System.out.println("3. Operaciones CRUD");
-            System.out.println("4. Salir");
+            System.out.println("1. Retos con consumo de archivo JSON");
+            System.out.println("2. Retos con la base de datos (MySQL)");
+            System.out.println("3. Salir");
             System.out.print("Seleccione una opción: ");
             String input = scanner.nextLine();
 
@@ -72,15 +63,12 @@ public class Main {
 
                 switch (opcion) {
                     case 1:
-                        RetosBase.mostrarMenuRetosBase(equipoService, jugadorService, scanner);
+                        mostrarSubmenuJSON();
                         break;
                     case 2:
-                        adicionales.mostrarMenuRetosAdicionales(equipoService, jugadorService, scanner);
+                        mostrarSubmenuMySQL();
                         break;
                     case 3:
-                        mostrarMenuCRUD();
-                        break;
-                    case 4:
                         System.out.println("Saliendo del programa...");
                         break;
                     default:
@@ -92,20 +80,18 @@ public class Main {
                 pausar(3);
                 limpiarConsola();
             }
-        } while (opcion != 4);
+        } while (opcion != 3);
     }
 
-    private static void mostrarMenuCRUD() {
+    private static void mostrarSubmenuJSON() {
         int opcion;
         do {
             System.out.println("------------------------");
-            System.out.println("---- Menú CRUD ----");
+            System.out.println("---- Submenú JSON ----");
             System.out.println("------------------------");
-            System.out.println("1. Crear Equipo");
-            System.out.println("2. Leer Equipos");
-            System.out.println("3. Actualizar Equipo");
-            System.out.println("4. Eliminar Equipo");
-            System.out.println("5. Volver al Menú Principal");
+            System.out.println("1. Retos Base");
+            System.out.println("2. Retos Adicionales");
+            System.out.println("3. Regresar al menu principal");
             System.out.print("Seleccione una opción: ");
             String input = scanner.nextLine();
 
@@ -114,19 +100,13 @@ public class Main {
 
                 switch (opcion) {
                     case 1:
-                        crearEquipo();
+                        RetosBase.mostrarMenuRetosBase(equipos, equipoService, jugadorService, scanner);
                         break;
                     case 2:
-                        leerEquipos();
+                        adicionales.mostrarMenuRetosAdicionales(equipos, equipoService, jugadorService, scanner);
                         break;
                     case 3:
-                        actualizarEquipo();
-                        break;
-                    case 4:
-                        eliminarEquipo();
-                        break;
-                    case 5:
-                        System.out.println("Volviendo al menú principal...");
+                        System.out.println("Regresando al menú principal...");
                         break;
                     default:
                         System.out.println("Opción no válida. Intente de nuevo.");
@@ -137,65 +117,108 @@ public class Main {
                 pausar(3);
                 limpiarConsola();
             }
-        } while (opcion != 5);
+        } while (opcion != 3);
     }
 
-    private static void crearEquipo() {
-        System.out.print("Ingrese el nombre del equipo: ");
-        String nombre = scanner.nextLine();
-        System.out.print("Ingrese la ciudad del equipo: ");
-        String ciudad = scanner.nextLine();
+    private static void mostrarSubmenuMySQL() {
+        // Crear una instancia de ConnMySql usando ConnectionFactory
+        ConnectionDb connectionDb = ConnectionFactory.crearConexion();
+        ConnMySql connMySql = (ConnMySql) connectionDb;
+    
+        // Verificar la conexión a la base de datos
+        System.out.println("Verificando conexión a la base de datos...");
+        boolean isConnected = connMySql.testConnection();
+    
+        if (!isConnected) {
+            System.out.println("No se pudo conectar a la base de datos. Regresando al menú principal...");
+            pausar(3); // Pausa para que el usuario lea el mensaje
+            return; // Regresar al menú principal
+        }
+    
+        // Si la conexión es exitosa, mostrar el submenú
+        int opcion;
+        do {
+            System.out.println("------------------------");
+            System.out.println("---- Submenú MySQL ----");
+            System.out.println("------------------------");
+            System.out.println("1. Listar equipos (Leer)");
+            System.out.println("2. Insertar un nuevo equipo (Crear)");
+            System.out.println("3. Actualizar un equipo existente (Actualizar)");
+            System.out.println("4. Eliminar un equipo (Eliminar)");
+            System.out.println("5. Listar jugadores de un equipo (Leer)");
+            System.out.println("6. Insertar un nuevo jugador (Crear)");
+            System.out.println("7. Actualizar un jugador existente (Actualizar)");
+            System.out.println("8. Eliminar un jugador (Eliminar)");
+            System.out.println("9. Regresar al menu principal");
+            System.out.print("Seleccione una opción: ");
+            String input = scanner.nextLine();
+    
+            if (Validaciones.esNumero(input)) {
+                opcion = Integer.parseInt(input);
+    
+                switch (opcion) {
+                    case 1:
+                        // Lógica para listar equipos (Leer) // Método para listar equipos
 
-        Equipo equipo = new Equipo();
-        equipo.setNombre(nombre);
-        equipo.setCiudad(ciudad);
+                        System.out.println("Listando equipos desde la base de datos...");
+                        equipoService.listarEquipos();
+                        break;
+                    case 2:
+                        // Lógica para insertar un nuevo equipo (Crear) // Método para insertar un equipo
 
-        equipoService.crearEquipo(equipo);
-        System.out.println("Equipo creado exitosamente.");
-    }
+                        System.out.println("Insertando un nuevo equipo...");
+                        equipoService.insertarEquipo(scanner); 
+                        break;
+                    case 3:
+                        // Lógica para actualizar un equipo existente (Actualizar) // Método para actualizar un equipo
 
-    private static void leerEquipos() {
-        List<Equipo> equipos = equipoService.obtenerTodosLosEquipos();
-        if (equipos.isEmpty()) {
-            System.out.println("No hay equipos registrados.");
-        } else {
-            for (Equipo equipo : equipos) {
-                System.out.println("ID: " + equipo.getId() + ", Nombre: " + equipo.getNombre() + ", Ciudad: " + equipo.getCiudad());
+                        System.out.println("Actualizando un equipo existente...");
+                        equipoService.actualizarEquipo(scanner); 
+                        break;
+                    case 4:
+                        // Lógica para eliminar un equipo (Eliminar) // Método para eliminar un equipo
+
+                        System.out.println("Eliminando un equipo...");
+                        equipoService.eliminarEquipo(scanner); 
+                        break;
+                    case 5:
+                        // Lógica para listar jugadores de un equipo (Leer) // Método para listar jugadores
+
+                        System.out.println("Listando jugadores de un equipo...");
+                        jugadorService.listarJugadores(scanner); 
+                        break;
+                    case 6:
+                        // Lógica para insertar un nuevo jugador (Crear) // Método para insertar un jugador
+
+                        System.out.println("Insertando un nuevo jugador...");
+                        jugadorService.insertarJugador(scanner); 
+                        break;
+                    case 7:
+                        // Lógica para actualizar un jugador existente (Actualizar) // Método para actualizar un jugador
+                        
+                        System.out.println("Actualizando un jugador existente...");
+                        jugadorService.actualizarJugador(scanner); 
+                        break;
+                    case 8:
+                        // Lógica para eliminar un jugador (Eliminar) // Método para eliminar un jugador
+
+                        System.out.println("Eliminando un jugador...");
+                        jugadorService.eliminarJugador(scanner); 
+                        break;
+                    case 9:
+                        System.out.println("Regresando al menú principal...");
+                        break;
+                    default:
+                        System.out.println("Opción no válida. Intente de nuevo.");
+                }
+            } else {
+                System.out.println("Entrada no válida. Por favor, ingrese un número.");
+                opcion = -1;
+                pausar(3);
+                limpiarConsola();
             }
-        }
+        } while (opcion != 9);
     }
-
-    private static void actualizarEquipo() {
-        leerEquipos();
-        System.out.print("Ingrese el ID del equipo a actualizar: ");
-        Long id = Long.parseLong(scanner.nextLine());
-
-        Equipo equipo = equipoService.obtenerEquipoPorId(id);
-        if (equipo != null) {
-            System.out.print("Ingrese el nuevo nombre del equipo: ");
-            String nombre = scanner.nextLine();
-            System.out.print("Ingrese la nueva ciudad del equipo: ");
-            String ciudad = scanner.nextLine();
-
-            equipo.setNombre(nombre);
-            equipo.setCiudad(ciudad);
-
-            equipoService.actualizarEquipo(equipo);
-            System.out.println("Equipo actualizado exitosamente.");
-        } else {
-            System.out.println("Equipo no encontrado.");
-        }
-    }
-
-    private static void eliminarEquipo() {
-        leerEquipos();
-        System.out.print("Ingrese el ID del equipo a eliminar: ");
-        Long id = Long.parseLong(scanner.nextLine());
-
-        equipoService.eliminarEquipo(id);
-        System.out.println("Equipo eliminado exitosamente.");
-    }
-
     // Método para poner una pausa
     public static void pausar(int segundos) {
         try {
