@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import com.crudbasededato.domain.entity.Equipo;
 import com.crudbasededato.infrastructure.database.ConnectionDb;
 import com.crudbasededato.infrastructure.database.ConnectionFactory;
+import com.crudbasededato.Main;
 
 public class EquipoService {
 
@@ -39,12 +40,45 @@ public class EquipoService {
 
     // Método para insertar un nuevo equipo
     public void insertarEquipo(Scanner scanner) {
-        System.out.print("Ingrese el nombre del equipo: ");
+        System.out.println("╔════════════════════════════════════╗");
+        System.out.println("║       🆕 Crear Nuevo Equipo 🆕      ║");
+        System.out.println("╠════════════════════════════════════╣");
+        System.out.println("║ Ingrese 0 en cualquier momento para ║");
+        System.out.println("║ regresar al submenú MySQL.         ║");
+        System.out.println("╚════════════════════════════════════╝");
+
+        System.out.print("👉 Ingrese el nombre del equipo: ");
         String nombre = scanner.nextLine();
-        System.out.print("Ingrese el año de fundación: ");
+
+        // Si el usuario ingresa 0, regresar al submenú MySQL
+        if (nombre.equals("0")) {
+            System.out.println("🔙 Regresando al submenú MySQL...");
+            Main.pausar(2);
+            Main.limpiarConsola();
+            return;
+        }
+
+        System.out.print("👉 Ingrese el año de fundación: ");
         String yearFoundation = scanner.nextLine();
-        System.out.print("Ingrese el nombre del entrenador: ");
+
+        // Si el usuario ingresa 0, regresar al submenú MySQL
+        if (yearFoundation.equals("0")) {
+            System.out.println("🔙 Regresando al submenú MySQL...");
+            Main.pausar(2);
+            Main.limpiarConsola();
+            return;
+        }
+
+        System.out.print("👉 Ingrese el nombre del entrenador: ");
         String coach = scanner.nextLine();
+
+        // Si el usuario ingresa 0, regresar al submenú MySQL
+        if (coach.equals("0")) {
+            System.out.println("🔙 Regresando al submenú MySQL...");
+            Main.pausar(2);
+            Main.limpiarConsola();
+            return;
+        }
 
         ConnectionDb connectionDb = ConnectionFactory.crearConexion();
         String query = "INSERT INTO equipos (name, yearfoundation, coach) VALUES (?, ?, ?)";
@@ -56,9 +90,12 @@ public class EquipoService {
             stmt.setString(2, yearFoundation);
             stmt.setString(3, coach);
             stmt.executeUpdate();
-            System.out.println("Equipo insertado correctamente.");
+            System.out.println("✅ Equipo insertado correctamente.");
         } catch (SQLException e) {
-            System.out.println("Error al insertar equipo: " + e.getMessage());
+            System.out.println("❌ Error al insertar equipo: " + e.getMessage());
+        } finally {
+            Main.pausar(2);
+            Main.limpiarConsola();
         }
     }
 

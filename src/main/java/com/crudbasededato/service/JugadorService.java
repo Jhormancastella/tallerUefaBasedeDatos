@@ -14,6 +14,7 @@ import com.crudbasededato.domain.entity.Equipo;
 import com.crudbasededato.domain.entity.jugador;
 import com.crudbasededato.infrastructure.database.ConnectionDb;
 import com.crudbasededato.infrastructure.database.ConnectionFactory;
+import com.crudbasededato.Main;
 
 public class JugadorService {
 
@@ -48,22 +49,102 @@ public class JugadorService {
 
     // Método para insertar un nuevo jugador
     public void insertarJugador(Scanner scanner) {
-        System.out.print("Ingrese el ID del equipo: ");
-        int equipoId = Integer.parseInt(scanner.nextLine());
-        System.out.print("Ingrese el dorsal: ");
+        System.out.println("╔════════════════════════════════════╗");
+        System.out.println("║       🆕 Crear Nuevo Jugador 🆕      ║");
+        System.out.println("╠════════════════════════════════════╣");
+        System.out.println("║ Ingrese 0 en cualquier momento para ║");
+        System.out.println("║ regresar al submenú MySQL.         ║");
+        System.out.println("╚════════════════════════════════════╝");
+
+        System.out.print("👉 Ingrese el ID del equipo: ");
+        String equipoIdInput = scanner.nextLine();
+
+        // Si el usuario ingresa 0, regresar al submenú MySQL
+        if (equipoIdInput.equals("0")) {
+            System.out.println("🔙 Regresando al submenú MySQL...");
+            Main.pausar(2);
+            Main.limpiarConsola();
+            return;
+        }
+
+        int equipoId = Integer.parseInt(equipoIdInput);
+
+        System.out.print("👉 Ingrese el dorsal: ");
         String dorsal = scanner.nextLine();
-        System.out.print("Ingrese el nombre: ");
+
+        // Si el usuario ingresa 0, regresar al submenú MySQL
+        if (dorsal.equals("0")) {
+            System.out.println("🔙 Regresando al submenú MySQL...");
+            Main.pausar(2);
+            Main.limpiarConsola();
+            return;
+        }
+
+        System.out.print("👉 Ingrese el nombre: ");
         String name = scanner.nextLine();
-        System.out.print("Ingrese la nacionalidad: ");
+
+        // Si el usuario ingresa 0, regresar al submenú MySQL
+        if (name.equals("0")) {
+            System.out.println("🔙 Regresando al submenú MySQL...");
+            Main.pausar(2);
+            Main.limpiarConsola();
+            return;
+        }
+
+        System.out.print("👉 Ingrese la nacionalidad: ");
         String nationality = scanner.nextLine();
-        System.out.print("Ingrese la edad: ");
+
+        // Si el usuario ingresa 0, regresar al submenú MySQL
+        if (nationality.equals("0")) {
+            System.out.println("🔙 Regresando al submenú MySQL...");
+            Main.pausar(2);
+            Main.limpiarConsola();
+            return;
+        }
+
+        System.out.print("👉 Ingrese la edad: ");
         String age = scanner.nextLine();
-        System.out.print("Ingrese la altura: ");
+
+        // Si el usuario ingresa 0, regresar al submenú MySQL
+        if (age.equals("0")) {
+            System.out.println("🔙 Regresando al submenú MySQL...");
+            Main.pausar(2);
+            Main.limpiarConsola();
+            return;
+        }
+
+        System.out.print("👉 Ingrese la altura: ");
         String height = scanner.nextLine();
-        System.out.print("Ingrese el peso: ");
+
+        // Si el usuario ingresa 0, regresar al submenú MySQL
+        if (height.equals("0")) {
+            System.out.println("🔙 Regresando al submenú MySQL...");
+            Main.pausar(2);
+            Main.limpiarConsola();
+            return;
+        }
+
+        System.out.print("👉 Ingrese el peso: ");
         String weight = scanner.nextLine();
-        System.out.print("Ingrese la posición: ");
+
+        // Si el usuario ingresa 0, regresar al submenú MySQL
+        if (weight.equals("0")) {
+            System.out.println("🔙 Regresando al submenú MySQL...");
+            Main.pausar(2);
+            Main.limpiarConsola();
+            return;
+        }
+
+        System.out.print("👉 Ingrese la posición: ");
         String position = scanner.nextLine();
+
+        // Si el usuario ingresa 0, regresar al submenú MySQL
+        if (position.equals("0")) {
+            System.out.println("🔙 Regresando al submenú MySQL...");
+            Main.pausar(2);
+            Main.limpiarConsola();
+            return;
+        }
 
         ConnectionDb connectionDb = ConnectionFactory.crearConexion();
         String query = "INSERT INTO jugadores (equipo_id, dorsal, name, nationality, age, height, weight, position) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -80,9 +161,12 @@ public class JugadorService {
             stmt.setString(7, weight);
             stmt.setString(8, position);
             stmt.executeUpdate();
-            System.out.println("Jugador insertado correctamente.");
+            System.out.println("✅ Jugador insertado correctamente.");
         } catch (SQLException e) {
-            System.out.println("Error al insertar jugador: " + e.getMessage());
+            System.out.println("❌ Error al insertar jugador: " + e.getMessage());
+        } finally {
+            Main.pausar(2);
+            Main.limpiarConsola();
         }
     }
 
